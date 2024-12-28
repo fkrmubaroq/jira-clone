@@ -17,7 +17,7 @@ import { registerSchema } from "../schema";
 type FormSchema = z.infer<typeof registerSchema>;
 
 export function SignUpCard() {
-    const { mutate: mutateRegister } = useRegister();
+    const { mutate: mutateRegister, isPending  } = useRegister();
 
     const form = useForm<FormSchema>({
         defaultValues: {
@@ -97,8 +97,8 @@ export function SignUpCard() {
                                 )}
                             />
 
-                            <Button size="lg" className="w-full" >
-                                Sign Up
+                            <Button size="lg" className="w-full" disabled={isPending} >
+                                Register
                             </Button>
                             <CardDescription className="text-center">
                                 By signing up, you agree to our  <br />

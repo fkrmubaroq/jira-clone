@@ -12,6 +12,9 @@ export const useLogin = () => {
       const response = await client.api.auth.login["$post"]({ json });
       return response.json();
     },
+    onSuccess: () => {
+      window.location.href = "/";
+    },
   });
 
   return mutation;
