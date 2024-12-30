@@ -120,6 +120,7 @@ export function SignUpCard() {
                         variant="secondary"
                         size="lg"
                         className="w-full"
+                        disabled={isPending}
                     >
                         <FcGoogle />
                         Login with Google
@@ -129,6 +130,7 @@ export function SignUpCard() {
                         variant="secondary"
                         size="lg"
                         className="w-full"
+                        disabled={isPending}
                     >
                         <FaGithub />
                         Login with Github

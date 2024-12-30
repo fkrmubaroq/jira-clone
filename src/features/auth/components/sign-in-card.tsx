@@ -15,7 +15,7 @@ import { loginSchema } from "../schema";
 
 type FormSchema = z.infer<typeof loginSchema>;
 export function SignInCard() {
-  const { mutate: mutateLogin } = useLogin()
+  const { mutate: mutateLogin, isPending } = useLogin()
 
   const form = useForm<FormSchema>({
     defaultValues: {
@@ -76,7 +76,7 @@ export function SignInCard() {
               />
 
 
-              <Button size="lg" className="w-full" >
+              <Button size="lg" className="w-full" disabled={isPending} >
                 Login
               </Button>
             </form>
@@ -88,6 +88,7 @@ export function SignInCard() {
             variant="secondary"
             size="lg"
             className="w-full"
+            disabled={isPending}
           >
             <FcGoogle />
             Login with Google
@@ -97,6 +98,7 @@ export function SignInCard() {
             variant="secondary"
             size="lg"
             className="w-full"
+            disabled={isPending}
           >
             <FaGithub />
             Login with Github
