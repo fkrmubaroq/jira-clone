@@ -31,11 +31,12 @@ const authRoutes = new Hono()
 
       return c.json({
         success: true,
+        message: "Logged in successfully",
       });
     } catch (e: any) {
       return c.json({
         success: false,
-        error: e.message,
+        message: e.message,
       });
     }
   })
