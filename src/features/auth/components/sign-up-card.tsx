@@ -117,7 +117,7 @@ export function SignUpCard() {
                 <LineSeparator text="Or" />
                 <CardContent className="p-7 flex flex-col gap-y-4">
                     <Button
-                        variant="secondary"
+                        variant="muted"
                         size="lg"
                         className="w-full"
                         disabled={isPending}
@@ -127,7 +127,7 @@ export function SignUpCard() {
                     </Button>
 
                     <Button
-                        variant="secondary"
+                        variant="muted"
                         size="lg"
                         className="w-full"
                         disabled={isPending}
