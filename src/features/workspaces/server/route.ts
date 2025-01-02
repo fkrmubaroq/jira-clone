@@ -5,7 +5,14 @@ import { Hono } from "hono";
 import { ID } from "node-appwrite";
 import { createWorkspaceSchema } from "../schemas";
 
-const app = new Hono().post(
+const app = new Hono()
+.get("/", sessionMiddleware, async (c) => {
+  const databases = c.get("databases");
+
+  const workspaces = await databases.listDocuments(DATABASE_ID, WORKSPACES_ID);
+  return c.json({ data: workspaces })
+})
+.post(
   "/",
   zValidator("form", createWorkspaceSchema),
   sessionMiddleware,
