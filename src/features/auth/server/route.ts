@@ -64,11 +64,12 @@ const authRoutes = new Hono()
           name: user.name,
           email: user.email,
         },
+        message: "Register successfully",
       });
     } catch (e: any) {
       return c.json({
         success: false,
-        error: e.message,
+        message: e.message,
       });
     }
   })

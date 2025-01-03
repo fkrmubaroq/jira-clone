@@ -17,14 +17,14 @@ export default function WorkspaceAvatar({
       {image ? (
         <div
           className={cn(
-            "relative size-8 rounded-md overflow-hidden",
+            "relative size-7 rounded-md overflow-hidden",
             className
           )}
         >
           <Image src={image} alt={name} fill className="object-cover" />
         </div>
       ) : (
-        <Avatar className={cn("size-8", className)}>
+        <Avatar className={cn("size-7", className)}>
           <AvatarFallback className="text-white bg-blue-600 font-semibold font-semibold uppercase">
             {name[0]}
           </AvatarFallback>
