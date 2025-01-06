@@ -3,18 +3,19 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,7 +23,8 @@ import { useCreateWorkspace } from "../api/use-create-workspace";
 import { createWorkspaceSchema } from "../schemas";
 
 type FormSchema = z.infer<typeof createWorkspaceSchema>;
-export default function CreateWorkspaceForm() {
+export default function CreateWorkspaceForm({ onCancel }: { onCancel: () => void}) {
+  const router = useRouter();
   const { mutate, isPending } = useCreateWorkspace();
 
   const form = useForm<FormSchema>({
@@ -33,15 +35,17 @@ export default function CreateWorkspaceForm() {
   });
 
   const onSubmit = (values: FormSchema) => {
-    console.log({ values });
     const payload = {
       ...values,
       image: values.image instanceof File ? values.image : "",
     };
-    mutate({ form: payload });
+    mutate({ form: payload }, {
+      onSuccess(response){
+        form.reset();
+        router.push(`/workspaces/${response.data.$id}`);
+      }
+    });
   };
-
-  const onCancel = () => {};
 
   const onChangeUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -99,7 +103,7 @@ export default function CreateWorkspaceForm() {
               >
                 Cancel
               </Button>
-              <Button size="lg" onClick={onCancel} disabled={isPending}>
+              <Button size="lg" disabled={isPending}>
                 Create Workspace
               </Button>
             </div>
