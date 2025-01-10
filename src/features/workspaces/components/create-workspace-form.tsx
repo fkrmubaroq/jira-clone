@@ -23,7 +23,7 @@ import { useCreateWorkspace } from "../api/use-create-workspace";
 import { createWorkspaceSchema } from "../schemas";
 
 type FormSchema = z.infer<typeof createWorkspaceSchema>;
-export default function CreateWorkspaceForm({ onCancel }: { onCancel: () => void}) {
+export default function CreateWorkspaceForm({ onCancel }: { onCancel?: () => void}) {
   const router = useRouter();
   const { mutate, isPending } = useCreateWorkspace();
 
