@@ -14,38 +14,46 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageIcon } from "lucide-react";
+import { ArrowLeftIcon, ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { z } from "zod";
-import { useCreateWorkspace } from "../api/use-create-workspace";
-import { createWorkspaceSchema } from "../schemas";
+import { useUpdateWorkspace } from "../api/use-update-workspace";
+import { updateWorkspaceSchema } from "../schemas";
+import { Workspace } from "../types";
 
-type FormSchema = z.infer<typeof createWorkspaceSchema>;
-export default function CreateWorkspaceForm({
+type FormSchema = z.infer<typeof updateWorkspaceSchema>;
+export default function EditWorkspaceForm({
   onCancel,
+  initialValues,
 }: {
   onCancel?: () => void;
+  initialValues: Workspace;
 }) {
   const router = useRouter();
-  const { mutate, isPending } = useCreateWorkspace();
+  const { mutate, isPending } = useUpdateWorkspace();
 
   const form = useForm<FormSchema>({
-    resolver: zodResolver(createWorkspaceSchema),
+    resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
-      name: "",
+      ...initialValues,
+      image: initialValues.imageUrl || "",
     },
   });
 
+  console.log(form.watch())
   const onSubmit = (values: FormSchema) => {
     const payload = {
       ...values,
       image: values.image instanceof File ? values.image : "",
     };
     mutate(
-      { form: payload },
+      {
+        form: payload,
+        param: { workspaceId: initialValues.$id },
+      },
       {
         onSuccess(response) {
           form.reset();
@@ -62,70 +70,84 @@ export default function CreateWorkspaceForm({
   };
 
   return (
-    <Card className="size-full border-none shadow-none">
-      <CardHeader className="flex p-7">
-        <CardTitle className="text-xl font-bold">
-          Create a new workspace
-        </CardTitle>
-      </CardHeader>
-      <div className="px-7">
-        <Separator />
-      </div>
-      <CardContent className="p-7">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-y-2">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Workspace</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    <>
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={
+          onCancel
+            ? onCancel
+            : () => router.push(`/workspaces/${initialValues.$id}`)
+        }
+      >
+        <ArrowLeftIcon />
+        Back
+      </Button>
+      <Card className="size-full border-none shadow-none mt-2">
+        <CardHeader className="flex flex-row items-center gap-x-4 p-7 space-y-0">
+          <CardTitle className="text-xl font-bold">
+            {initialValues.name}
+          </CardTitle>
+        </CardHeader>
+        <div className="px-7">
+          <Separator />
+        </div>
+        <CardContent className="p-7">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-y-2">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Workspace</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <UploadImageInput
-                    field={field}
-                    isLoading={isPending}
-                    onChangeUploadImage={onChangeUploadImage}
-                  />
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <UploadImageInput
+                      field={field}
+                      isLoading={isPending}
+                      onChangeUploadImage={onChangeUploadImage}
+                    />
+                  )}
+                />
+              </div>
+              <div
+                className={cn("flex items-center mt-5", {
+                  "justify-between": onCancel,
+                  "justify-end": !onCancel,
+                })}
+              >
+                {onCancel && (
+                  <Button
+                    type="button"
+                    size="lg"
+                    variant="secondary"
+                    onClick={onCancel}
+                    disabled={isPending}
+                  >
+                    Cancel
+                  </Button>
                 )}
-              />
-            </div>
-            <div
-              className={cn("flex items-center mt-5", {
-                "justify-between": onCancel,
-                "justify-end": !onCancel,
-              })}
-            >
-              {onCancel && (
-                <Button
-                  type="button"
-                  size="lg"
-                  variant="secondary"
-                  onClick={onCancel}
-                  disabled={isPending}
-                >
-                  Cancel
+                <Button size="lg" disabled={isPending}>
+                  Save Changes
                 </Button>
-              )}
-              <Button size="lg" disabled={isPending}>
-                Create Workspace
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </>
   );
 }
 
@@ -185,7 +207,7 @@ function UploadImageInput({
             variant="destructive"
             className="w-fit mt-2"
             onClick={() => {
-              if(!inputRef.current) return
+              if (!inputRef.current) return;
               field.onChange(null);
               inputRef.current.value = "";
             }}
