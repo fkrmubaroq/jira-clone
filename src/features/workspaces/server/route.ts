@@ -123,5 +123,69 @@ const app = new Hono()
 
       return c.json({ data: workspace });
     }
-  );
+  )
+  .delete("/:workspaceId", sessionMiddleware, async (c) => {
+    const { workspaceId } = c.req.param();
+    try {
+      const databases = c.get("databases");
+      const user = c.get("user");
+
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id,
+      });
+      if (!member || member.role !== MemberRole.ADMIN) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      // TODO: Delete Member, projects, and tasks
+
+      await databases.deleteDocument(DATABASE_ID, WORKSPACES_ID, workspaceId);
+
+      return c.json({
+        success: true,
+        message: "Workspace deleted",
+        data: { $id: workspaceId },
+      });
+    } catch(e:any) {
+      return c.json({
+        success: false,
+        data: { $id: workspaceId },
+        message: e.message || "Error deleting workspace",
+      });
+    }
+  })
+  .post("/:workspaceId/reset-invite-code", sessionMiddleware, async (c) => {
+    const { workspaceId } = c.req.param();
+    try {
+      const databases = c.get("databases");
+      const user = c.get("user");
+
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id,
+      });
+      if (!member || member.role !== MemberRole.ADMIN) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const workspace = await databases.updateDocument(DATABASE_ID, WORKSPACES_ID, workspaceId,{
+        inviteCode: generateInviteCode(7),
+      });
+
+      return c.json({
+        success: true,
+        message: "Workspace deleted",
+        data: workspace,
+      });
+    } catch(e:any) {
+      return c.json({
+        success: false,
+        data: { $id: workspaceId },
+        message: e.message || "Error deleting workspace",
+      });
+    }
+  });
 export default app;

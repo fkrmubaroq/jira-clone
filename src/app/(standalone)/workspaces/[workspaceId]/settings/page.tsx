@@ -1,5 +1,5 @@
-import { getWorkspace } from "@/features/workspaces/actions";
 import EditWorkspaceForm from "@/features/workspaces/components/edit-workspace-form";
+import { getWorkspace } from "@/features/workspaces/queries";
 import { redirect } from "next/navigation";
 
 type WorkspaceIdSettingProps = {
@@ -13,7 +13,7 @@ export default async function WorkspaceIdSettingPage({
 
   const initialValues = await getWorkspace({ workspaceId: params.workspaceId });
   if (!initialValues) {
-    redirect(`/workspace/${params.workspaceId}`);
+    redirect(`/workspaces/${params.workspaceId}`);
   }
 
   return (

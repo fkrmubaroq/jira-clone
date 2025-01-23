@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useModal } from "@/hooks/use-modal";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeftIcon, ImageIcon } from "lucide-react";
@@ -20,9 +21,11 @@ import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useDeleteWorkspace } from "../api/use-delete-workspace";
 import { useUpdateWorkspace } from "../api/use-update-workspace";
 import { updateWorkspaceSchema } from "../schemas";
 import { Workspace } from "../types";
+import ModalDeleteWorkspace from "./modal-delete-workspace";
 
 type FormSchema = z.infer<typeof updateWorkspaceSchema>;
 export default function EditWorkspaceForm({
@@ -34,6 +37,9 @@ export default function EditWorkspaceForm({
 }) {
   const router = useRouter();
   const { mutate, isPending } = useUpdateWorkspace();
+  const { show, showModal, hideModal } = useModal<"confirmation-delete">();
+  const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
+    useDeleteWorkspace();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -43,7 +49,20 @@ export default function EditWorkspaceForm({
     },
   });
 
-  console.log(form.watch())
+  const handleDelete = async () => {
+    deleteWorkspace(
+      {
+        param: {
+          workspaceId: initialValues.$id,
+        },
+      },
+      {
+        onSuccess: () => {
+          router.push("/");
+        },
+      }
+    );
+  };
   const onSubmit = (values: FormSchema) => {
     const payload = {
       ...values,
@@ -68,9 +87,17 @@ export default function EditWorkspaceForm({
     if (!file) return;
     form.setValue("image", file);
   };
-
   return (
     <>
+      <ModalDeleteWorkspace
+        show={show}
+        onHide={hideModal}
+        onConfirm={handleDelete}
+        title="Delete Workspace"
+        message="This action cannot be undone"
+        variant="destructive"
+        isLoading={isDeletingWorkspace}
+      />
       <Button
         size="sm"
         variant="ghost"
@@ -83,70 +110,82 @@ export default function EditWorkspaceForm({
         <ArrowLeftIcon />
         Back
       </Button>
-      <Card className="size-full border-none shadow-none mt-2">
-        <CardHeader className="flex flex-row items-center gap-x-4 p-7 space-y-0">
-          <CardTitle className="text-xl font-bold">
-            {initialValues.name}
-          </CardTitle>
-        </CardHeader>
-        <div className="px-7">
-          <Separator />
-        </div>
-        <CardContent className="p-7">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-y-2">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Workspace</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+      <div className="flex flex-col gap-y-4">
+        <Card className="size-full border-none shadow-none mt-2">
+          <CardHeader className="flex flex-row items-center gap-x-4 p-7 space-y-0">
+            <CardTitle className="text-xl font-bold">
+              {initialValues.name}
+            </CardTitle>
+          </CardHeader>
+          <div className="px-7">
+            <Separator />
+          </div>
+          <CardContent className="p-7">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <div className="flex flex-col gap-y-2">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Workspace</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="image"
-                  render={({ field }) => (
-                    <UploadImageInput
-                      field={field}
-                      isLoading={isPending}
-                      onChangeUploadImage={onChangeUploadImage}
-                    />
+                  <FormField
+                    control={form.control}
+                    name="image"
+                    render={({ field }) => (
+                      <UploadImageInput
+                        field={field}
+                        isLoading={isPending}
+                        onChangeUploadImage={onChangeUploadImage}
+                      />
+                    )}
+                  />
+                </div>
+                <div
+                  className={cn("flex items-center mt-5", {
+                    "justify-between": onCancel,
+                    "justify-end": !onCancel,
+                  })}
+                >
+                  {onCancel && (
+                    <Button
+                      type="button"
+                      size="lg"
+                      variant="secondary"
+                      onClick={onCancel}
+                      disabled={isPending}
+                    >
+                      Cancel
+                    </Button>
                   )}
-                />
-              </div>
-              <div
-                className={cn("flex items-center mt-5", {
-                  "justify-between": onCancel,
-                  "justify-end": !onCancel,
-                })}
-              >
-                {onCancel && (
-                  <Button
-                    type="button"
-                    size="lg"
-                    variant="secondary"
-                    onClick={onCancel}
-                    disabled={isPending}
-                  >
-                    Cancel
+                  <Button size="lg" disabled={isPending}>
+                    Save Changes
                   </Button>
-                )}
-                <Button size="lg" disabled={isPending}>
-                  Save Changes
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <CardDangerZone
+          isLoading={isPending}
+          onClick={() => showModal("confirmation-delete")}
+        />
+
+        <CardResetInviteCode
+          id={initialValues.id}
+          inviteCode={initialValues.inviteCode}
+        />
+      </div>
     </>
   );
 }
@@ -228,5 +267,70 @@ function UploadImageInput({
         )}
       </div>
     </div>
+  );
+}
+
+function CardDangerZone({
+  isLoading,
+  onClick,
+}: {
+  isLoading: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Card className="w-full h-full border-none shadow-none">
+      <CardContent className="p-7">
+        <div className="flex flex-col">
+          <h3 className="font-bold">Danger Zone</h3>
+          <p className="text-sm text-muted-foreground">
+            Deleting a workspace is irreversible and will remove all associated
+            data.
+          </p>
+          <Button
+            className="mt-6 w-fit ml-auto"
+            size="sm"
+            variant="destructive"
+            type="button"
+            disabled={isLoading}
+            onClick={onClick}
+          >
+            Delete Workspace
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function CardResetInviteCode({
+  id,
+  inviteCode,
+}: {
+  id: string;
+  inviteCode: string;
+}) {
+  const fullInviteLink = `${location.origin}/workspaces/${id}/join/${inviteCode}`;
+  return (
+    <Card className="w-full h-full border-none shadow-none">
+      <CardContent className="p-7">
+        <div className="flex flex-col">
+          <h3 className="font-bold">Invite Members</h3>
+          <p className="text-sm text-muted-foreground">
+            Use the invite link to add members to your workspace.
+          </p>
+          <div className="mt-4">
+            <div className="flex items-center gap-x-2"></div>
+          </div>
+          <Button
+            className="mt-6 w-fit ml-auto"
+            size="sm"
+            variant="destructive"
+            type="button"
+          >
+            Delete Workspace
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
