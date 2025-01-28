@@ -15,17 +15,19 @@ import { Separator } from "@/components/ui/separator";
 import { useModal } from "@/hooks/use-modal";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeftIcon, ImageIcon } from "lucide-react";
+import { ArrowLeftIcon, CopyIcon, ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { useDeleteWorkspace } from "../api/use-delete-workspace";
+import { useResetInviteCode } from "../api/use-reset-invite-code";
 import { useUpdateWorkspace } from "../api/use-update-workspace";
 import { updateWorkspaceSchema } from "../schemas";
 import { Workspace } from "../types";
-import ModalDeleteWorkspace from "./modal-delete-workspace";
+import ModalConfirmation from "./modal-confirmation";
 
 type FormSchema = z.infer<typeof updateWorkspaceSchema>;
 export default function EditWorkspaceForm({
@@ -37,9 +39,13 @@ export default function EditWorkspaceForm({
 }) {
   const router = useRouter();
   const { mutate, isPending } = useUpdateWorkspace();
-  const { show, showModal, hideModal } = useModal<"confirmation-delete">();
+  const { show, showModal, modalName, hideModal } = useModal<
+    "confirmation-delete" | "reset-invite-code"
+  >();
   const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
     useDeleteWorkspace();
+  const { mutate: resetInviteCode, isPending: isResettingInviteCode } =
+    useResetInviteCode();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(updateWorkspaceSchema),
@@ -63,6 +69,23 @@ export default function EditWorkspaceForm({
       }
     );
   };
+
+  const handleResetInviteCode = () => {
+    resetInviteCode(
+      {
+        param: {
+          workspaceId: initialValues.$id,
+        },
+      },
+      {
+        onSuccess: () => {
+          hideModal()
+          router.refresh();
+        },
+      }
+    );
+  };
+
   const onSubmit = (values: FormSchema) => {
     const payload = {
       ...values,
@@ -89,15 +112,33 @@ export default function EditWorkspaceForm({
   };
   return (
     <>
-      <ModalDeleteWorkspace
-        show={show}
-        onHide={hideModal}
-        onConfirm={handleDelete}
-        title="Delete Workspace"
-        message="This action cannot be undone"
-        variant="destructive"
-        isLoading={isDeletingWorkspace}
-      />
+      {show && (
+        <>
+          {modalName === "confirmation-delete" && (
+            <ModalConfirmation
+              show={show}
+              onHide={hideModal}
+              onConfirm={handleDelete}
+              title="Delete Workspace"
+              message="This action cannot be undone"
+              variant="destructive"
+              isLoading={isDeletingWorkspace}
+            />
+          )}
+
+          {modalName === "reset-invite-code" && (
+            <ModalConfirmation
+              show={show}
+              onHide={hideModal}
+              onConfirm={handleResetInviteCode}
+              title="Reset invite link"
+              message="This will invalidate the current invite link"
+              variant="destructive"
+              isLoading={isResettingInviteCode}
+            />
+          )}
+        </>
+      )}
       <Button
         size="sm"
         variant="ghost"
@@ -182,8 +223,9 @@ export default function EditWorkspaceForm({
         />
 
         <CardResetInviteCode
-          id={initialValues.id}
+          id={initialValues.$id}
           inviteCode={initialValues.inviteCode}
+          onClick={() => showModal("reset-invite-code")}
         />
       </div>
     </>
@@ -305,11 +347,19 @@ function CardDangerZone({
 function CardResetInviteCode({
   id,
   inviteCode,
+  onClick,
 }: {
   id: string;
   inviteCode: string;
+  onClick: () => void;
 }) {
   const fullInviteLink = `${location.origin}/workspaces/${id}/join/${inviteCode}`;
+  const onCopyInviteLink = () => {
+    navigator.clipboard.writeText(fullInviteLink).then(() => {
+      toast.success("Invite link copied to clipboard");
+    });
+  };
+
   return (
     <Card className="w-full h-full border-none shadow-none">
       <CardContent className="p-7">
@@ -319,15 +369,25 @@ function CardResetInviteCode({
             Use the invite link to add members to your workspace.
           </p>
           <div className="mt-4">
-            <div className="flex items-center gap-x-2"></div>
+            <div className="flex items-center gap-x-2">
+              <Input disabled value={fullInviteLink} />
+              <Button
+                onClick={onCopyInviteLink}
+                variant="secondary"
+                className="size-10"
+              >
+                <CopyIcon />
+              </Button>
+            </div>
           </div>
           <Button
             className="mt-6 w-fit ml-auto"
             size="sm"
             variant="destructive"
             type="button"
+            onClick={onClick}
           >
-            Delete Workspace
+            Reset invite link
           </Button>
         </div>
       </CardContent>
