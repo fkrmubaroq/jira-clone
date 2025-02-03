@@ -16,10 +16,19 @@ const app = new Hono()
     const user = c.get("user");
     const databases = c.get("databases");
 
+    const members = await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [
+      Query.equal("userId", user.$id),
+    ]);
+    if (members.total === 0) {
+      return c.json({ data: { documents: [], total: 0 } });
+    }
+
+    const workspaceIds = members.documents.map((member) => member.workspaceId);
+
     const workspaces = await databases.listDocuments(
       DATABASE_ID,
       WORKSPACES_ID,
-      [Query.equal("userId", user.$id)]
+      [Query.orderDesc("$createdAt"), Query.contains("$id", workspaceIds)]
     );
     return c.json({ data: workspaces });
   })
@@ -242,7 +251,7 @@ const app = new Hono()
         payload
       );
 
-      return c.json({ data: workspace });
+      return c.json({ data: workspace }, 200);
     }
   );
 export default app;

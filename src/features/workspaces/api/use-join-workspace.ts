@@ -7,6 +7,10 @@ type ResponseType = InferResponseType<
   (typeof client.api.workspaces)[":workspaceId"]["join"]["$post"],
   200
 >;
+type ResponseError = InferResponseType<
+  (typeof client.api.workspaces)[":workspaceId"]["join"]["$post"],
+  400
+>;
 
 type RequestType = InferRequestType<
   (typeof client.api.workspaces)[":workspaceId"]["join"]["$post"]
@@ -23,8 +27,12 @@ export const useJoinWorkspace = () => {
         param,
         json,
       });
+
       if (!response.ok) {
-        throw new Error("Failed to join workspace");
+        const data = await response.json();
+        throw new Error(
+          (data as ResponseError).error || "Failed to join workspace"
+        );
       }
       return response.json();
     },

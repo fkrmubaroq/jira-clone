@@ -11,7 +11,7 @@ export default function WorkspaceAvatar({
   name: string;
   className?: string;
 }) {
-    console.log("ia", image)
+  
   return (
     <div className="flex justify-start items-center gap-3 font-medium">
       {image ? (
