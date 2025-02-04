@@ -79,8 +79,7 @@ export default function EditWorkspaceForm({
       },
       {
         onSuccess: () => {
-          hideModal()
-          router.refresh();
+          hideModal();
         },
       }
     );
@@ -97,9 +96,8 @@ export default function EditWorkspaceForm({
         param: { workspaceId: initialValues.$id },
       },
       {
-        onSuccess(response) {
+        onSuccess() {
           form.reset();
-          router.push(`/workspaces/${response.data.$id}`);
         },
       }
     );

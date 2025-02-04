@@ -80,6 +80,7 @@ const authRoutes = new Hono()
     deleteCookie(c, AUTH_COOKIE);
     await account.deleteSession("current");
     return c.json({ success: true });
-  });
+  })
+  ;
 
 export default authRoutes;

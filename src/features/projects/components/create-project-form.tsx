@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useWorkspaceId } from "@/features/workspaces/api/use-workspace-id";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImageIcon } from "lucide-react";
@@ -21,20 +22,21 @@ import React, { useRef } from "react";
 import { ControllerRenderProps, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useCreateWorkspace } from "../api/use-create-workspace";
-import { createWorkspaceSchema } from "../schemas";
+import { useCreateProject } from "../api/use-create-project";
+import { createProjectSchema } from "../schema";
 
-type FormSchema = z.infer<typeof createWorkspaceSchema>;
-export default function CreateWorkspaceForm({
+type FormSchema = z.infer<typeof createProjectSchema>;
+export default function CreateProjectForm({
   onCancel,
 }: {
   onCancel?: () => void;
 }) {
+  const workspaceId = useWorkspaceId();
   const router = useRouter();
-  const { mutate, isPending } = useCreateWorkspace();
+  const { mutate, isPending } = useCreateProject();
 
   const form = useForm<FormSchema>({
-    resolver: zodResolver(createWorkspaceSchema),
+    resolver: zodResolver(createProjectSchema.omit({ workspaceId: true })),
     defaultValues: {
       name: "",
     },
@@ -43,14 +45,14 @@ export default function CreateWorkspaceForm({
   const onSubmit = (values: FormSchema) => {
     const payload = {
       ...values,
+      workspaceId,
       image: values.image instanceof File ? values.image : "",
     };
     mutate(
       { form: payload },
       {
-        onSuccess(response) {
+        onSuccess() {
           form.reset();
-          router.push(`/workspaces/${response.data.$id}`);
         },
       }
     );
@@ -66,7 +68,7 @@ export default function CreateWorkspaceForm({
     <Card className="size-full border-none shadow-none">
       <CardHeader className="flex p-7">
         <CardTitle className="text-xl font-bold">
-          Create a new workspace
+          Create a new project
         </CardTitle>
       </CardHeader>
       <div className="px-7">
@@ -81,9 +83,9 @@ export default function CreateWorkspaceForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Workspace</FormLabel>
+                    <FormLabel>Project name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} placeholder="Enter project name" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -120,7 +122,7 @@ export default function CreateWorkspaceForm({
                 </Button>
               )}
               <Button size="lg" disabled={isPending}>
-                Create Workspace
+                Create project
               </Button>
             </div>
           </form>
@@ -177,7 +179,7 @@ function UploadImageInput({
         )}
       </div>
       <div className="flex flex-col">
-        <p className="text-sm">Workspace Icon</p>
+        <p className="text-sm">Project Icon</p>
         <p className="text-sm text-muted-foreground">
           JPG, PNG, SVG, or JPEG, max 1mb
         </p>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
 import Navigation from "./navigation";
+import Projects from "./projects";
 import WorkspaceSwitcher from "./workspace-switcher";
 
 export default function Sidebar() {
@@ -14,5 +15,6 @@ export default function Sidebar() {
         <Separator className="my-5" />
         <WorkspaceSwitcher />
         <Navigation />
+        <Projects />
     </aside>
 }

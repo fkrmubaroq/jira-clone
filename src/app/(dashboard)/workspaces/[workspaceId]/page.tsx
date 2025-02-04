@@ -1,6 +1,6 @@
-export default function WorkspaceIdPage({ params }){
+export default function WorkspaceIdPage(){
     return <div>
-        Workspace id: {params.workspaceId}
+        Workspace id:
     </div>
 
 }

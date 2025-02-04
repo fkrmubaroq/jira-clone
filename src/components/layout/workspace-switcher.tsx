@@ -4,8 +4,8 @@ import {
   ResponseGetWorkspace,
   useGetWorkspaces,
 } from "@/features/workspaces/api/use-get-workspace";
-import useCreateWorkspaceModal from "@/features/workspaces/api/user-create-workspace-modal";
 import WorkspaceAvatar from "@/features/workspaces/components/workspace-avatar";
+import useCreateWorkspaceModal from "@/features/workspaces/hooks/use-create-workspace-modal";
 import { useParams, useRouter } from "next/navigation";
 import { RiAddCircleFill } from "react-icons/ri";
 import {
