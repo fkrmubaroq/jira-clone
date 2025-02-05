@@ -14,7 +14,7 @@ export default function Projects() {
   const { data } = useGetProjects({ workspaceId });
   const { open } = useCreateProjectModal();
   return (
-    <div className="flex flex-col gap-y-2 mb-2">
+    <div className="flex flex-col gap-y-2 my-2">
       <div className="flex items-center justify-between">
         <p className="text-xs uppercase text-neutral-500">Projects</p>
         <RiAddCircleFill

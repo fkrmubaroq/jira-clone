@@ -51,8 +51,9 @@ export default function CreateProjectForm({
     mutate(
       { form: payload },
       {
-        onSuccess() {
+        onSuccess({ data }) {
           form.reset();
+          router.push(`/workspaces/${workspaceId}/projects/${data.$id}`)
         },
       }
     );
