@@ -25,6 +25,7 @@ const app = new Hono()
         workspaceId,
         userId: user.$id,
       });
+
       if (!member) {
         return c.json({ error: "Unauthorized" }, 401);
       }
@@ -90,12 +91,12 @@ const app = new Hono()
         };
       });
 
-      return {
+      return c.json({
         data: {
           ...tasks,
           documents: populatedTasks,
         },
-      };
+      });
     }
   )
   .post(
