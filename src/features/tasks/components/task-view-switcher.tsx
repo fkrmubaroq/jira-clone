@@ -8,8 +8,12 @@ import { Loader, PlusIcon } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useGetTasks } from "../api/use-get-tasks";
 import useCreateTaskModal from "../hooks/use-create-task-modal";
+import useTaskFilters from "../hooks/use-task-filters";
+import DataFilters from "./data-filters";
 
 export default function TaskViewSwitcher() {
+    const [{ status, assigneeId, projectId, dueDate }] =
+      useTaskFilters();
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
@@ -17,6 +21,10 @@ export default function TaskViewSwitcher() {
   const workspaceId = useWorkspaceId();
   const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
     workspaceId,
+    projectId,
+    assigneeId,
+    status,
+    dueDate
   });
   return (
     <Tabs
@@ -43,10 +51,11 @@ export default function TaskViewSwitcher() {
           </Button>
         </div>
 
+        <DataFilters />
         <Separator />
         {isLoadingTasks ? (
           <div className="w-full border rounded-lg h-[200px] flex justify-center items-center">
-            <Loader className="size-5 animate-spin text-muted-foreground"/>
+            <Loader className="size-5 animate-spin text-muted-foreground" />
           </div>
         ) : (
           <>
