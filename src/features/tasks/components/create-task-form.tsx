@@ -3,20 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DatePicker from "@/components/ui/date-picker";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import MemberAvatar from "@/features/members/components/member-avatar";
@@ -27,6 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useCreateTask } from "../api/use-create-task";
+import useCreateTaskModal from "../hooks/use-create-task-modal";
 import { createTaskSchema } from "../schema";
 import { TaskStatus } from "../types";
 
@@ -40,6 +41,7 @@ export default function CreateTaskForm({
   projectOptions: { id: string; name: string; imageUrl: string }[];
   memberOptions: { id: string; name: string }[];
 }) {
+  const { values } = useCreateTaskModal();
   const workspaceId = useWorkspaceId();
   const { mutate, isPending } = useCreateTask();
 
@@ -144,6 +146,7 @@ export default function CreateTaskForm({
                   <FormItem>
                     <FormLabel>Status</FormLabel>
                     <Select
+                      value={values?.status || undefined}
                       defaultValue={field.value}
                       onValueChange={field.onChange}
                     >

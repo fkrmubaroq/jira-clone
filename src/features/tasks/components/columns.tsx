@@ -122,7 +122,6 @@ export const columns: ColumnDef<Task>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      console.log({ row })
       const id = row.original.$id;
       const projectId = row.original.projectId;
 

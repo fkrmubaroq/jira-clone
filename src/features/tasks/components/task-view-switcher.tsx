@@ -11,11 +11,11 @@ import useCreateTaskModal from "../hooks/use-create-task-modal";
 import useTaskFilters from "../hooks/use-task-filters";
 import { columns } from "./columns";
 import DataFilters from "./data-filters";
+import DataKanban from "./data-kanban";
 import { DataTable } from "./data-table";
 
 export default function TaskViewSwitcher() {
-    const [{ status, assigneeId, projectId, dueDate }] =
-      useTaskFilters();
+  const [{ status, assigneeId, projectId, dueDate }] = useTaskFilters();
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
@@ -26,7 +26,7 @@ export default function TaskViewSwitcher() {
     projectId,
     assigneeId,
     status,
-    dueDate
+    dueDate,
   });
   return (
     <Tabs
@@ -62,10 +62,10 @@ export default function TaskViewSwitcher() {
         ) : (
           <>
             <TabsContent value="table" className="mt-0">
-              <DataTable columns={columns} data={tasks?.documents || []}/>
+              <DataTable columns={columns} data={tasks?.documents || []} />
             </TabsContent>
             <TabsContent value="kanban" className="mt-0">
-              Data Kanban
+              <DataKanban data={tasks?.documents || []}/>
             </TabsContent>
             <TabsContent value="calendar" className="mt-0">
               Data Calendar
