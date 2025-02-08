@@ -35,7 +35,7 @@ export default function TaskViewSwitcher() {
       className="flex-1 w-full border rounded-lg"
     >
       <div className="h-full flex flex-col overflow-auto p-4">
-        <div className="flex flex-col gap-y-2 lg:flex-row justify-between items-center">
+        <div className="flex flex-col gap-y-2 lg:flex-row justify-between items-center mb-1">
           <TabsList className="w-full lg:w-auto">
             <TabsTrigger className="h-8 w-full lg:w-auto" value="table">
               Table
@@ -48,7 +48,7 @@ export default function TaskViewSwitcher() {
             </TabsTrigger>
           </TabsList>
           <Button size="sm" className="w-full lg:w-auto" onClick={open}>
-            <PlusIcon className="size-4 mr-2" />
+            <PlusIcon className="size-4" />
             New
           </Button>
         </div>

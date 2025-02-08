@@ -3,8 +3,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import MemberAvatar from "@/features/members/components/member-avatar";
 import ProjectAvatar from "@/features/projects/components/project-avatar";
+import TaskActions from "@/features/projects/components/task-actions";
+import { snakeCaseToTitleCase } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, MoreVerticalIcon } from "lucide-react";
 import { Task } from "../types";
 import TaskDate from "./task-date";
 
@@ -95,9 +97,7 @@ export const columns: ColumnDef<Task>[] = [
     },
     cell: ({ row }) => {
       const dueDate = row.original.dueDate;
-      return (
-       <TaskDate value={dueDate} />
-      );
+      return <TaskDate value={dueDate} />;
     },
   },
   {
@@ -115,8 +115,23 @@ export const columns: ColumnDef<Task>[] = [
     },
     cell: ({ row }) => {
       const status = row.original.status;
+      return <Badge variant={status}>{snakeCaseToTitleCase(status)}</Badge>;
+    },
+  },
+
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      console.log({ row })
+      const id = row.original.$id;
+      const projectId = row.original.projectId;
+
       return (
-        <Badge>{status}</Badge>
+        <TaskActions id={id} projectId={projectId}>
+          <Button variant="ghost" className="size-8">
+            <MoreVerticalIcon className="size-4" />
+          </Button>
+        </TaskActions>
       );
     },
   },

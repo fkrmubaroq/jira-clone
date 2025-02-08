@@ -44,7 +44,7 @@ export default function DataFilters({
   };
   if (isLoading) return <></>;
   return (
-    <div className="flex flex-col lg:flex-row gap-2">
+    <div className="flex flex-col lg:flex-row gap-2 mb-1">
       <SelectionStatus value={status} onChange={onStatusChange} />
       <SelectionAssignee
         options={memberOptions}
