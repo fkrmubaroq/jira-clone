@@ -1,4 +1,4 @@
-import { DragDropContext } from "@hello-pangea/dnd";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useState } from "react";
 import { Task, TaskStatus } from "../types";
 import KanbanColumnHeader from "./kanban-column-header";
@@ -37,7 +37,6 @@ export default function DataKanban({ data }: { data: Task[] }) {
     return initialTasks;
   });
 
-
   return (
     <DragDropContext onDragEnd={() => ""}>
       <div className="flex overflow-x-auto">
@@ -51,6 +50,35 @@ export default function DataKanban({ data }: { data: Task[] }) {
                 board={board}
                 taskCount={tasks[board].length}
               />
+              <Droppable droppableId={board}>
+                {(provided) => {
+                  return (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      className="min-h-[200px] py-1.5"
+                    >
+                      {tasks[board].map((task, index) => (
+                        <Draggable
+                          key={task.$id}
+                          draggableId={task.$id}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              ref={provided.innerRef}
+                            >
+                              {task.name}
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                    </div>
+                  );
+                }}
+              </Droppable>
             </div>
           );
         })}
