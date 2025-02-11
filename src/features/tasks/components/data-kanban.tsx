@@ -1,6 +1,7 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useState } from "react";
 import { Task, TaskStatus } from "../types";
+import KanbanCard from "./kanban-card";
 import KanbanColumnHeader from "./kanban-column-header";
 const boards: TaskStatus[] = [
   TaskStatus.BACKLOG,
@@ -70,7 +71,7 @@ export default function DataKanban({ data }: { data: Task[] }) {
                               {...provided.dragHandleProps}
                               ref={provided.innerRef}
                             >
-                              {task.name}
+                             <KanbanCard task={task}/>
                             </div>
                           )}
                         </Draggable>

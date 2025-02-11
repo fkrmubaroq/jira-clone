@@ -193,7 +193,7 @@ const app = new Hono()
   .patch(
     "/:taskId",
     sessionMiddleware,
-    zValidator("json", createTaskSchema.partial()),
+    zValidator("json", createTaskSchema.partial()), 
     async (c) => {
       const user = c.get("user");
       const databases = c.get("databases");

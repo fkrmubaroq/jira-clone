@@ -7,10 +7,12 @@ export default function ProjectAvatar({
   name,
   className,
   fallbackClassName,
+  textClassName,
 }: {
   image?: string;
   name: string;
   className?: string;
+  textClassName?: string;
   fallbackClassName?: string;
 }) {
   return (
@@ -36,7 +38,7 @@ export default function ProjectAvatar({
           </AvatarFallback>
         </Avatar>
       )}
-      <span className="truncate text-sm">{name}</span>
+      <span className={cn("truncate text-sm",textClassName)}>{name}</span>
     </div>
   );
 }
