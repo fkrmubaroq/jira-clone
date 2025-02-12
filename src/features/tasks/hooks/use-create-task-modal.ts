@@ -13,8 +13,6 @@ export default function useCreateTaskModal() {
     })
   );
 
-  console.log({ values });
-
   const open = () => setIsOpen(true);
   const close = () => {
     setIsOpen(false);

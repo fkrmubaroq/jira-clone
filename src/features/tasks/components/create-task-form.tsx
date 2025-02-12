@@ -24,6 +24,7 @@ import ProjectAvatar from "@/features/projects/components/project-avatar";
 import { useWorkspaceId } from "@/features/workspaces/api/use-workspace-id";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useCreateTask } from "../api/use-create-task";
@@ -63,6 +64,11 @@ export default function CreateTaskForm({
       }
     );
   };
+
+  useEffect(() => {
+    if (!values || !values.status) return;
+    form.setValue("status", values.status);
+  }, [values, form]);
 
   return (
     <Card className="size-full border-none shadow-none">
@@ -116,10 +122,9 @@ export default function CreateTaskForm({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecte assignee" />
+                          <SelectValue placeholder="Select assignee" />
                         </SelectTrigger>
                       </FormControl>
-                      <FormMessage />
                       <SelectContent>
                         {memberOptions.map((member) => (
                           <SelectItem key={member.id} value={member.id}>
@@ -155,7 +160,6 @@ export default function CreateTaskForm({
                           <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                       </FormControl>
-                      <FormMessage />
                       <SelectContent>
                         <SelectItem value={TaskStatus.BACKLOG}>
                           Backlog
