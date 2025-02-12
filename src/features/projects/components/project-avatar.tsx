@@ -8,12 +8,14 @@ export default function ProjectAvatar({
   className,
   fallbackClassName,
   textClassName,
+  showText = true
 }: {
   image?: string;
   name: string;
   className?: string;
   textClassName?: string;
   fallbackClassName?: string;
+  showText?:boolean
 }) {
   return (
     <div className="flex justify-start items-center gap-3 font-medium">
@@ -38,7 +40,7 @@ export default function ProjectAvatar({
           </AvatarFallback>
         </Avatar>
       )}
-      <span className={cn("truncate text-sm",textClassName)}>{name}</span>
+      {showText && <span className={cn("truncate text-sm",textClassName)}>{name}</span>}
     </div>
   );
 }
