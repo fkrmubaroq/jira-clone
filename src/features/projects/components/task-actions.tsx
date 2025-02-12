@@ -32,7 +32,7 @@ export default function TaskActions({
   };
 
   const onOpenTask = () => {
-    router.push(`/workpsaces/${workspaceId}/tasks/${id}`);
+    router.push(`/workspaces/${workspaceId}/tasks/${id}`);
   };
 
   const onOpenProject = () => {

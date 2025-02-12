@@ -1,6 +1,10 @@
 import { getCurrent } from "@/features/auth/queries";
+import { redirect } from "next/navigation";
+import TaskIdClient from "./client";
 
 export default async function TaskIdPage({ }){
     const user = await getCurrent();
-    return <div></div>
+    if(!user) redirect("/sign-in");
+
+    return <TaskIdClient />
 }

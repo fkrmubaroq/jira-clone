@@ -1,5 +1,5 @@
 .rbc-calendar {
-  @apply overflow-y-auto max-w-[1140px];
+  @apply overflow-y-auto xl:w-full sm:max-w-[1300px];
 }
 
 .rbc-header {
@@ -14,10 +14,10 @@
   @apply border-l-0;
 }
 .rbc-month-row {
-  @apply min-h-[180px] border-t border-x min-w-[1140px];
+  @apply min-h-[180px] border-t border-x min-w-[1040px]  xl:w-full;
 }
 .rbc-month-header {
-  @apply overflow-y-auto min-w-[1140px];
+  @apply overflow-y-auto min-w-[1040px] xl:w-full;
 }
 .rbc-date-cell {
   @apply min-w-[128px];
