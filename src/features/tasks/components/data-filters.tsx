@@ -51,12 +51,13 @@ export default function DataFilters({
         value={assigneeId}
         onChange={onAssigneeChange}
       />
-      <SelectionProject
-        options={projectOptions}
-        value={projectId}
-        onChange={onProjectChange}
-      />
-
+      {!hideProjectFilter && (
+        <SelectionProject
+          options={projectOptions}
+          value={projectId}
+          onChange={onProjectChange}
+        />
+      )}
       <DatePicker
         placeholder="Due date"
         className="h-8 w-full lg:w-auto"
