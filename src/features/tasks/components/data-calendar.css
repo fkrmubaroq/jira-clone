@@ -1,46 +1,46 @@
 .rbc-calendar {
-  @apply overflow-y-auto xl:w-full sm:max-w-[1300px];
+	@apply overflow-y-auto xl:w-full sm:max-w-[1300px];
 }
 
 .rbc-header {
-  @apply text-sm font-normal pb-4 text-muted-foreground border-b-0;
+	@apply text-sm font-normal pb-4 text-muted-foreground border-b-0;
 }
 
 .rbc-button-link {
-  @apply text-xs font-normal text-muted-foreground;
+	@apply text-xs font-normal text-muted-foreground;
 }
 
 .rbc-header + .rbc-header {
-  @apply border-l-0;
+	@apply border-l-0;
 }
 .rbc-month-row {
-  @apply min-h-[180px] border-t border-x min-w-[1040px]  xl:w-full;
+	@apply min-h-[180px] border-t border-x min-w-[1040px]  xl:w-full;
 }
 .rbc-month-header {
-  @apply overflow-y-auto min-w-[1040px] xl:w-full;
+	@apply overflow-y-auto min-w-[1040px] xl:w-full;
 }
 .rbc-date-cell {
-  @apply min-w-[128px];
+	@apply min-w-[128px];
 }
 :not(.rbc-month-row ~ .rbc-month-row).rbc-month-row {
-  @apply rounded-t-md;
+	@apply rounded-t-md;
 }
 
 .rbc-month-row:last-of-type {
-  @apply border-b rounded-b-md;
+	@apply border-b rounded-b-md;
 }
 
 .rbc-month-view {
-  @apply border-none;
+	@apply border-none;
 }
 
 .rbc-date-cell {
-  @apply p-2;
+	@apply p-2;
 }
 
 .rbc-today {
-  background-color: inherit;
+	background-color: inherit;
 }
 .rbc-off-range-bg {
-  background-color: inherit;
+	background-color: inherit;
 }

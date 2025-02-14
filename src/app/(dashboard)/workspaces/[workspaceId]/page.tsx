@@ -1,6 +1,3 @@
-export default function WorkspaceIdPage(){
-    return <div>
-        Workspace id:
-    </div>
-
+export default function WorkspaceIdPage() {
+	return <div>Workspace id:</div>;
 }

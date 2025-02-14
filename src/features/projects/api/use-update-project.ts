@@ -1,43 +1,40 @@
 import { client } from "@/lib/rpc";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { InferRequestType, InferResponseType } from "hono";
-import { useRouter } from "next/navigation";
+import type { InferRequestType, InferResponseType } from "hono";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.projects)[":projectId"]["$patch"],
-  200
+	(typeof client.api.projects)[":projectId"]["$patch"],
+	200
 >;
 
 type RequestType = InferRequestType<
-  (typeof client.api.projects)[":projectId"]["$patch"]
+	(typeof client.api.projects)[":projectId"]["$patch"]
 >;
 
 export const useUpdateProject = () => {
-  const router = useRouter();
-  const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-  const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ form, param }) => {
-      const response = await client.api.projects[":projectId"]["$patch"]({
-        form,
-        param,
-      });
-      if (!response.ok) {
-        throw new Error("Failed to update project");
-      }
-      return response.json();
-    },
-    onSuccess: ({ data }) => {
-      toast.success("Project updated");
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-      queryClient.invalidateQueries({ queryKey: ["project", data.$id] });
-      router.refresh();
-    },
-    onError: () => {
-      toast.error("Failed to update project");
-    },
-  });
+	const mutation = useMutation<ResponseType, Error, RequestType>({
+		mutationFn: async ({ form, param }) => {
+			const response = await client.api.projects[":projectId"]["$patch"]({
+				form,
+				param,
+			});
+			if (!response.ok) {
+				throw new Error("Failed to update project");
+			}
+			return response.json();
+		},
+		onSuccess: ({ data }) => {
+			toast.success("Project updated");
+			queryClient.invalidateQueries({ queryKey: ["projects"] });
+			queryClient.invalidateQueries({ queryKey: ["project", data.$id] });
+		},
+		onError: () => {
+			toast.error("Failed to update project");
+		},
+	});
 
-  return mutation;
+	return mutation;
 };

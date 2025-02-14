@@ -1,38 +1,38 @@
 import { client } from "@/lib/rpc";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { InferRequestType, InferResponseType } from "hono";
+import type { InferRequestType, InferResponseType } from "hono";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-    (typeof client.api.members)[":memberId"]["$delete"],
-    200
+	(typeof client.api.members)[":memberId"]["$delete"],
+	200
 >;
 
 type RequestType = InferRequestType<
-    (typeof client.api.members)[":memberId"]["$delete"]
+	(typeof client.api.members)[":memberId"]["$delete"]
 >;
 
 export const useDeleteMember = () => {
-    const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-    const mutation = useMutation<ResponseType, Error, RequestType>({
-        mutationFn: async ({ param }) => {
-            const response = await client.api.members[":memberId"]["$delete"]({
-                param,
-            });
-            if (!response.ok) {
-                throw new Error("Failed to delete member");
-            }
-            return response.json();
-        },
-        onSuccess: () => {
-            toast.success("Member deleted");
-            queryClient.invalidateQueries({ queryKey: ["members"] });
-        },
-        onError: (response) => {
-            toast.error(response.message || "Failed to delete member");
-        },
-    });
+	const mutation = useMutation<ResponseType, Error, RequestType>({
+		mutationFn: async ({ param }) => {
+			const response = await client.api.members[":memberId"]["$delete"]({
+				param,
+			});
+			if (!response.ok) {
+				throw new Error("Failed to delete member");
+			}
+			return response.json();
+		},
+		onSuccess: () => {
+			toast.success("Member deleted");
+			queryClient.invalidateQueries({ queryKey: ["members"] });
+		},
+		onError: (response) => {
+			toast.error(response.message || "Failed to delete member");
+		},
+	});
 
-    return mutation;
+	return mutation;
 };
