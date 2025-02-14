@@ -1,3 +1,5 @@
+import WorkspaceIdClient from "./client";
+
 export default function WorkspaceIdPage() {
-	return <div>Workspace id:</div>;
+	return <WorkspaceIdClient />;
 }
