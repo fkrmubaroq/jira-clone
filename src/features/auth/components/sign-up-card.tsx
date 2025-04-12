@@ -146,7 +146,7 @@ export function SignUpCard() {
 				</CardContent>
 				<LineSeparator text="Or" />
 				<CardContent className="p-7 flex flex-col gap-y-4">
-					<Button
+					{/* <Button
 						variant="muted"
 						size="lg"
 						className="w-full"
@@ -164,7 +164,7 @@ export function SignUpCard() {
 					>
 						<FaGithub />
 						Login with Github
-					</Button>
+					</Button> */}
 				</CardContent>
 
 				<CardContent className="p-7 flex items-center justify-center">

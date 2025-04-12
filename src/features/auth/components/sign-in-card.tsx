@@ -101,7 +101,7 @@ export function SignInCard() {
 				</CardContent>
 				<LineSeparator text="Or" />
 				<CardContent className="p-7 flex flex-col gap-y-4">
-					<Button
+					{/* <Button
 						variant="muted"
 						size="lg"
 						className="w-full"
@@ -119,7 +119,7 @@ export function SignInCard() {
 					>
 						<FaGithub />
 						Login with Github
-					</Button>
+					</Button> */}
 				</CardContent>
 
 				<LineSeparator />
