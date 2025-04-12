@@ -142,7 +142,7 @@ export function SignUpCard() {
 						</form>
 					</Form>
 				</CardContent>
-				<LineSeparator text="Or" />
+				{/* <LineSeparator text="Or" /> */}
 				<CardContent className="p-7 flex flex-col gap-y-4">
 					{/* <Button
 						variant="muted"
