@@ -19,8 +19,6 @@ import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import type { z } from "zod";
 import { useRegister } from "../api/use-register";
 import { registerSchema } from "../schema";
