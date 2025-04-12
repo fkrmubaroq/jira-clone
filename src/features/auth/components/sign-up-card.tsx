@@ -178,18 +178,18 @@ export function SignUpCard() {
 	);
 }
 
-function LineSeparator({ text }: { text?: string }) {
-	return (
-		<div className="px-7">
-			{text ? (
-				<div className="flex items-center">
-					<Separator className="!w-1/2 !shrink" />
-					<span className="text-sm text-muted-foreground px-4">{text}</span>
-					<Separator className="!w-1/2 !shrink" />
-				</div>
-			) : (
-				<Separator />
-			)}
-		</div>
-	);
-}
+// function LineSeparator({ text }: { text?: string }) {
+// 	return (
+// 		<div className="px-7">
+// 			{text ? (
+// 				<div className="flex items-center">
+// 					<Separator className="!w-1/2 !shrink" />
+// 					<span className="text-sm text-muted-foreground px-4">{text}</span>
+// 					<Separator className="!w-1/2 !shrink" />
+// 				</div>
+// 			) : (
+// 				<Separator />
+// 			)}
+// 		</div>
+// 	);
+// }
